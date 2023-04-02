@@ -39,4 +39,31 @@ def find_n(df):
     upper = np.log10(df['Qsc (Mscf/D)'].to_numpy()[0]) - np.log10(df['Qsc (Mscf/D)'].to_numpy()[-1])
     lower = np.log10(df['Pr2 - Pwf2'].to_numpy()[0]) - np.log10(df['Pr2 - Pwf2'].to_numpy()[-1])
     n = upper/lower
+
+    st.latex(f'n = \\frac{{\\log({df["Qsc (Mscf/D)"].to_numpy()[0]}) - \\log({df["Qsc (Mscf/D)"].to_numpy()[-1]})}}'
+             f'{{\\log({df["Pr2 - Pwf2"].to_numpy()[0]}) - \\log({df["Pr2 - Pwf2"].to_numpy()[-1]})}}')
+
+    st.latex(f'n = {np.round(n,2)}')
+
     return np.round(n,2)
+
+@st.cache_data
+def find_C(df, pr, n):
+    C = df['Qsc (Mscf/D)'].to_numpy()[-1] / (df['Pr2 - Pwf2'].to_numpy()[-1]**n)
+
+    st.latex(r'C = \frac{q_\text{sc}}{(P_r^2-P_\text{wf}^2)^n}')
+    st.latex(f'C = \\frac{{{df["Qsc (Mscf/D)"].to_numpy()[-1]}}}{{({df["Pr2 - Pwf2"].to_numpy()[-1]})^\\text{{{n}}}}}')
+    st.latex(f'C = {np.round(C,2)} ~mscfd/psia')
+
+    return np.round(C,2)
+
+def find_AOF(df, pr, n, C):
+
+    AOF = C * (pr**2)**n
+    st.latex(r'q_\text{sc} = C * (P_r^2 - P_\text{wf}^2)^n')
+    st.latex(f'q_\\text{{sc}} = {C} * ({pr}^2 - 0^2)^\\text{{{n}}}')
+    st.latex(f'AOF = {np.round(AOF)}~psia')
+
+    return np.round(AOF, 2)
+
+

@@ -6,6 +6,7 @@ import numpy as np
 requirement = st.selectbox('What do you want to calculate?', ['Radius of investigation', 'Flow After Flow test',
                                                               'Isochronal test', 'Modified Isochronal test'])
 
+
 if requirement == 'Radius of investigation':
     if 'rinv_data' not in st.session_state:
         st.session_state['rinv_data'] = [0.0,0.0,0.0,0.0,0.0,0.0]
@@ -48,7 +49,8 @@ elif requirement == 'Flow After Flow test':
             st.plotly_chart(c_plot)
 
             n = Flow_after_flow.find_n(values_df)
-            st.latex( )
+            C = Flow_after_flow.find_C(values_df, pr, n)
+            AOF = Flow_after_flow.find_AOF(values_df, pr, n, C)
 
 elif requirement == 'Isochronal test':
     st.write('isoch')
