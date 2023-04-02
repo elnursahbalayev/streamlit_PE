@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from functions.gas_deliverability import Radius_of_investigation, Flow_after_flow
 import numpy as np
+import plotly
 
 requirement = st.selectbox('What do you want to calculate?', ['Radius of investigation', 'Flow After Flow test',
                                                               'Isochronal test', 'Modified Isochronal test'])
