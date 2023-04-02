@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from functions.gas_deliverability import Radius_of_investigation
+from functions.gas_deliverability import Radius_of_investigation, Flow_after_flow
 import numpy as np
 
 requirement = st.selectbox('What do you want to calculate?', ['Radius of investigation', 'Flow After Flow test',
@@ -34,7 +34,6 @@ if requirement == 'Radius of investigation':
         st.latex(f'r_\\text{{inv}} = {np.round(rinv,2)} \\text{{ ft}}')
 
 elif requirement == 'Flow After Flow test':
-    if 'faf_data' not in st.session_state:
         num_of_tests = int(st.number_input('How many tests were conducted?', format='%i', value=0))
         q_values = [st.number_input(f'Q{i+1} (mscf)') for i in range(num_of_tests)]
         pwf_values = [st.number_input(f'Pwf{i+1} (psia)') for i in range(num_of_tests)]
@@ -42,11 +41,14 @@ elif requirement == 'Flow After Flow test':
         values_df = {'Qsc (Mscf/D)':q_values, 'Pwf (psia)':pwf_values}
         values_df = pd.DataFrame(values_df)
 
-        st.session_state['faf_data'] = [values_df, pr]
-    else:
-        values_df = st.session_state['faf_data'][0]
-        pr = st.session_state['faf_data'][1]
-    st.write(values_df)
+        values_df = Flow_after_flow.pressure_difference_squared(values_df, pr)
+        st.write(values_df)
+        if len(values_df) == num_of_tests and len(values_df) != 0:
+            c_plot = Flow_after_flow.plot_log_log_of_C(values_df, pr)
+            st.plotly_chart(c_plot)
+
+            n = Flow_after_flow.find_n(values_df)
+            st.latex( )
 
 elif requirement == 'Isochronal test':
     st.write('isoch')
